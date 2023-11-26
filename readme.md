@@ -22,3 +22,18 @@ Reactor poll的大小是固定的，根据CPU的数目确定。
 
 
 
+### 服务端编译
+- g++ muduo_server.cc -o server -lmuduo_net -lmuduo_base -lpthread
+- gcc -I头文件搜索路径 -L库文件搜索路径 -l库名称 
+- /usr/include 和/usr/local/include 为默认的文件搜索路径
+### telnet作为客户端启动
+- telnet 127.0.0.1 6000 
+
+### 编译配置文件
+- F1键
+- edit(json)  生成c_cpp_properties.json
+- 完成配置json文件的配置, 主要是添加"compilerPath": "/usr/bin/gcc"
+- Ctrl+Shift+B生成tasks.json文件
+![Alt text](pic/image2.png)
+
+
