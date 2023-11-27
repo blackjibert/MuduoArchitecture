@@ -36,4 +36,17 @@ Reactor poll的大小是固定的，根据CPU的数目确定。
 - Ctrl+Shift+B生成tasks.json文件
 ![Alt text](pic/image2.png)
 
-
+### Cmake配置
+- 使用简单方便，可以跨平台，构建项目编译环境。尤其比直接写Makefile简单(在构建大型工程编译时，需要写大量的文件依赖关系)，可以通过简单的CMake生成负责的Makefile文件。
+- cmake命令会执行目录下的CMakeLists.txt配置文件里面的配置项，一个基本的CMakeLists.txt的配置文件内容如下:
+```
+#要求cmake最低的版本号
+cmake_minimum_required (VERSION 2.8)
+project (demo) # 定义当前工程名字
+set(CMAKE_BUILD_TYPE “Debug")#设置debug模式，如果没有这一行将不能调试设断点
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} -g)
+add_executable(main main.c)
+#进入子目录下执行 CMakeLists.txt文件这里的1ib和tests里面都有可编译的代码文件
+add_subdirectory(lib)add_subdirectory(tests)
+```
+- 进入build文件夹: cmake .. 然后: make

@@ -1,5 +1,7 @@
 {
     "files.associations": {
         "bitset": "cpp"
-    }
+    },
+    "cmake.cmakePath": "/usr/bin/cmake",
+
 }
