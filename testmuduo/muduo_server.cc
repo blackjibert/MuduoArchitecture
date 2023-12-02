@@ -27,7 +27,7 @@ using namespace placeholders;
 */
 class MyTcpServer
 {
-public:
+public://#3
     MyTcpServer(EventLoop *loop,               // 事件循环, Reactor,
                const InetAddress &listenAddr, // IP+PORT
                const string &nameArg          // 服务器的名字
