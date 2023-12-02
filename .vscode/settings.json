@@ -1,7 +1,15 @@
 {
-    "files.associations": {
-        "bitset": "cpp"
-    },
-    "cmake.cmakePath": "/usr/bin/cmake",
-
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/usr/include/c++/4.8.2/x86_64-redhat-linux",
+                "${workspaceFolder}/example"
+            ],
+            "defines": [],
+            "intelliSenseMode": "linux-clang-x64"
+        }
+    ],
+    "version": 4
 }

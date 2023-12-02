@@ -1,3 +1,0 @@
-/home/zhj/MuduoArchitecture/testmuduo/build/CMakeFiles/server.dir
-/home/zhj/MuduoArchitecture/testmuduo/build/CMakeFiles/edit_cache.dir
-/home/zhj/MuduoArchitecture/testmuduo/build/CMakeFiles/rebuild_cache.dir
