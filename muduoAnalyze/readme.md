@@ -96,7 +96,7 @@ void EventLoop::loop() { // EventLoop 所属线程执行
 }
 ```
 
-每个EventLoop对象都唯一绑定了一个线程,这个线程其实就在一直执行这个函数里面的while循环,这个while循环的大致逻辑比较简单。就是调用```Poller::poll```方法获取事件监听器上的监听结果。接下来在```loop```里面就会调用监听结果中每一个```Channel```的处理函数```handleEvent()```。每一个```Channel```的处理函数会根据```Channel类```中封装的实际发生的事件, 执行```Channel类```中封装的各事件处理函数。(比如一个```Channel```发生了可读事件, 可写事件, 则这个```Channel```的```handleEvent()```就会调用提前注册在这个```Channel```的可读事件和可写事件处理函数, 又比如另一个```Channel```只发生了可读事件, 那么```handleEvent()```就只会调用提前注册在这个```Channel```中的可读事件处理函数)。上面讲```Channel```时也提到了```Channel```对应的四种事件处理函数(回调函数): ```读回调函数setReadCallback```、```写回调函数setWriteCallback```、```关闭回调函数setCloseCallback```、```错误回调函数setErrorCallback```等四种回调函数。
+每个```EventLoop```对象都唯一绑定了一个线程,这个线程其实就在一直执行这个函数里面的while循环,这个while循环的大致逻辑比较简单。就是调用```Poller::poll```方法获取事件监听器上的监听结果。接下来在```loop```里面就会调用监听结果中每一个```Channel```的处理函数```handleEvent()```。每一个```Channel```的处理函数会根据```Channel类```中封装的实际发生的事件, 执行```Channel类```中封装的各事件处理函数。(比如一个```Channel```发生了可读事件, 可写事件, 则这个```Channel```的```handleEvent()```就会调用提前注册在这个```Channel```的可读事件和可写事件处理函数, 又比如另一个```Channel```只发生了可读事件, 那么```handleEvent()```就只会调用提前注册在这个```Channel```中的可读事件处理函数)。上面讲```Channel```时也提到了```Channel```对应的四种事件处理函数(回调函数): ```读回调函数setReadCallback```、```写回调函数setWriteCallback```、```关闭回调函数setCloseCallback```、```错误回调函数setErrorCallback```等四种回调函数。
 
 看完上面的代码，感受到EventLoop的主要功能了吗?其实EventLoop所做的事情就是: **持续循环的获取监听结果并且根据结果调用处理函数。**
 
