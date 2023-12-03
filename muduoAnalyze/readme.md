@@ -65,13 +65,16 @@ muduo提供了```epoll```和```poll```两种IO多路复用方法来实现事件�
 - ```TimeStamp poll(int timeoutMs, ChannelList *activeChannels)```: 这个函数可以说是```Poller的核心```了，当外部调用```poll```方法的时候，该方法底层其实是通过```epoll_wait```获取这个事件监听器上发生事件的fd及其对应发生的事件，我们知道每个fd都是由一个```Channel```封装的，通过哈希表```channels_```可以根据fd找到封装这个fd的```Channel```。将事件监听器监听到该fd发生的事件写进这个Channel中的revents成员变量中。然后把这个Channel装进```activeChannels```中(它是一个vector<Channel*>)。这样，当外界调用完poll之后就能拿到事件监听器的监听结果(```activeChannels_```), 【后面会经常提到这个```监听结果```这四个字，希望你明白这代表什么含义】
 
 #### 2.3. EventLoop
-刚才的```Poller```是封装了和事件监听有关的方法和成员, 调用一次```Poller::poll```方法它就能给你返回事件监听器的监听结果(发生事件的fd 及其发生的事件)。作为一个网络服务器, 需要有```持续监听```、```持续获取监听结果```、```持续处理监听结果对应的事件```的能力, 也就是我们需要<font color="#aeff7f">循环的去调用```Poller::poll```方法获取实际发生事件的```Channel```集合,  然后调用这些```Channel```里面保管的不同类型事件的处理函数(调用```Channel::handleEvent```方法)。</font> 
+刚才的```Poller```是封装了和事件监听有关的方法和成员, 调用一次```Poller::poll```方法它就能给你返回事件监听器的监听结果(发生事件的fd 及其发生的事件)。作为一个网络服务器, 需要有```持续监听```、```持续获取监听结果```、```持续处理监听结果对应的事件```的能力, 也就是我们需要<font color="#AEFF7F">循环的去调用```Poller::poll```方法获取实际发生事件的```Channel```集合, 然后调用这些```Channel```里面保管的不同类型事件的处理函数(调用```Channel::handleEvent```方法)。</font> 
 
 - ```EventLoop```就是负责实现"循环", 负责驱动"循环"的重要模块! ```Channel```和```Poller```其实相当于```EventLoop```的手下.
 - ```EventLoop```整合封装了二者并向上提供了更方便的接口来使用.
 
 #####  2.3.1. 全局概览Poller、Channel和EventLoop在整个Multi-Reactor通信架构中的角色
-EventLoop起到一个驱动循环的功能, Poller负责从事件监听器上获取监听结果。而Channel类则在其中起到了将fd及其相关属性封装的作用, 将fd及其感兴趣事件和发生的事件以及不同事件对应的回调函数封装在一起, 这样在各个模块中传递更加方便。接着EventLoop调用。
+- EventLoop起到一个驱动循环的功能;
+- Poller负责从事件监听器上获取监听结果;
+- Channel类则在其中起到了将fd及其相关属性封装的作用, 将fd及其感兴趣事件和发生的事件以及不同事件对应的回调函数封装在一起, 这样在各个模块中传递更加方便;
+- 接着EventLoop调用;
 
 ![Alt text](pic/image2.png)
 另外上面这张图没有画出Acceptor，因为Acceptor和EventLoop和Poller之间有点错杂，可能画出来效果不好。
