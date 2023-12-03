@@ -11,5 +11,8 @@
             "intelliSenseMode": "linux-clang-x64"
         }
     ],
-    "version": 4
+    "version": 4,
+    "files.associations": {
+        "iostream": "cpp"
+    }
 }
