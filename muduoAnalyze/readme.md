@@ -48,24 +48,29 @@ void disableAll() {events_ |= kNonEvent; update();}
 #### 2.2. Poller / EPollPoller
 - 负责```监听```文件描述符事件是否触发以及返回发生事件的文件描述符以及具体事件的模块就是```Poller```。
 - 所以一个```Poller```对象对应一个事件监听器(这里我不确定要不要把```Poller```就当作事件监听器)。
-- 在Multi-Reactor模型中，有多少```Reactor```就有多少```Poller```。
+- 在Multi-Reactor模型中, 有多少```Reactor```就有多少```Poller```。
 muduo提供了```epoll```和```poll```两种IO多路复用方法来实现事件监听。不过默认是使用epoll来实现，也可以通过选项选择```poll```。但是我自己重构的muduo库只支持```epoll```。
-- Poller是个抽象虚类，由EpollPoller和PollPoller继承实现(陈硕的muduo网络库中除此之外基本都是基于对象的编程风格，只有这里通过采用面向对象的方式，Poller实际上是一个抽象类，EpollPoller才是对Poller的具体实现，也是对epoll的具体封装), 与监听文件描述符和返回监听结果的具体方法也基本上是在这两个派生类中实现。
-- EpollPoller就是封装了用epoll方法实现的与事件监听有关的各种方法
-- PollPoller就是封装了poll方法实现的与事件监听有关的各种方法。
-- 以后谈到Poller希望大家都知道我说的其实是EpollPoller。
+- ```Poller```是个抽象虚类,由```EpollPoller```和```PollPoller```继承实现(陈硕的muduo网络库中除此之外基本都是基于对象的编程风格, 只有这里通过采用面向对象的方式，```Poller```实际上是一个抽象类,```EpollPoller```才是对```Poller```的具体实现，也是对```epoll```的具体封装), 与监听文件描述符和返回监听结果的具体方法也基本上是在这两个派生类中实现。
+- ```EpollPoller```就是封装了用```epoll```方法实现的与事件监听有关的各种方法
+- ```PollPoller```就是封装了```poll```方法实现的与事件监听有关的各种方法。
+- 以后谈到```Poller```希望大家都知道我说的其实是```EpollPoller```。
 
 ##### Poller/EpollPoller的重要成员变量：
 
-- epollfd_: 就是epoll_create方法返回的epoll句柄。
-- channels_：这个变量是std::unordered_map<int, Channel*>类型，负责记录文件描述符fd到Channel的映射，也帮忙保管所有注册在你这个Poller上的Channel。
-- ownerLoop_：所属的EventLoop对象，看到后面你懂了。
-    
+- ```epollfd_```: 就是```epoll_create```方法返回的```epoll```句柄。
+- ```channels_```: 这个变量是```std::unordered_map<int, Channel*>```类型，负责记录文件描述符fd到Channel的映射，也帮忙保管所有注册在你这个```Poller```上的```Channel```。
+- ```ownerLoop_```: 所属的```EventLoop```对象，看到后面你懂了。
+
 ##### EpollPoller给外部提供的最重要的方法：
-- TimeStamp poll(int timeoutMs, ChannelList *activeChannels)：这个函数可以说是```Poller的核心```了，当外部调用poll方法的时候，该方法底层其实是通过```epoll_wait```获取这个事件监听器上发生事件的fd及其对应发生的事件，我们知道每个fd都是由一个```Channel```封装的，通过哈希表```channels_```可以根据fd找到封装这个fd的```Channel```。将事件监听器监听到该fd发生的事件写进这个Channel中的revents成员变量中。然后把这个Channel装进```activeChannels```中(它是一个vector<Channel*>)。这样，当外界调用完poll之后就能拿到事件监听器的监听结果(```activeChannels_```), 【后面会经常提到这个```监听结果```这四个字，希望你明白这代表什么含义】
+- ```TimeStamp poll(int timeoutMs, ChannelList *activeChannels)```: 这个函数可以说是```Poller的核心```了，当外部调用```poll```方法的时候，该方法底层其实是通过```epoll_wait```获取这个事件监听器上发生事件的fd及其对应发生的事件，我们知道每个fd都是由一个```Channel```封装的，通过哈希表```channels_```可以根据fd找到封装这个fd的```Channel```。将事件监听器监听到该fd发生的事件写进这个Channel中的revents成员变量中。然后把这个Channel装进```activeChannels```中(它是一个vector<Channel*>)。这样，当外界调用完poll之后就能拿到事件监听器的监听结果(```activeChannels_```), 【后面会经常提到这个```监听结果```这四个字，希望你明白这代表什么含义】
 
 #### 2.3. EventLoop
-刚才的Poller是封装了和事件监听有关的方法和成员, 调用一次Poller::poll方法它就能给你返回事件监听器的监听结果(发生事件的fd 及其发生的事件)。作为一个网络服务器，需要有```持续监听```、```持续获取监听结果```、```持续处理监听结果对应的事件```的能力，也就是我们需要循环的去调用```Poller::poll```方法获取实际发生事件的```Channel```集合，然后调用这些```Channel```里面保管的不同类型事件的处理函数(调用```Channel::handleEvent```方法)。
+刚才的```Poller```是封装了和事件监听有关的方法和成员, 调用一次```Poller::poll```方法它就能给你返回事件监听器的监听结果(发生事件的fd 及其发生的事件)。作为一个网络服务器, 需要有```持续监听```、```持续获取监听结果```、```持续处理监听结果对应的事件```的能力, 也就是我们需要 " 循环的去调用```Poller::poll```方法获取实际发生事件的```Channel```集合,  然后调用这些```Channel```里面保管的不同类型事件的处理函数(调用```Channel::handleEvent```方法)。" 
 
-- EventLoop就是负责实现"循环", 负责驱动"循环"的重要模块! Channel和Poller其实相当于EventLoop的手下.
-- EventLoop整合封装了二者并向上提供了更方便的接口来使用。
+- ```EventLoop```就是负责实现"循环", 负责驱动"循环"的重要模块! ```Channel```和```Poller```其实相当于```EventLoop```的手下.
+- ```EventLoop```整合封装了二者并向上提供了更方便的接口来使用.
+
+#####  2.3.1. 全局概览Poller、Channel和EventLoop在整个Multi-Reactor通信架构中的角色
+EventLoop起到一个驱动循环的功能, Poller负责从事件监听器上获取监听结果。而Channel类则在其中起到了将fd及其相关属性封装的作用, 将fd及其感兴趣事件和发生的事件以及不同事件对应的回调函数封装在一起, 这样在各个模块中传递更加方便。接着EventLoop调用。
+
+![Alt text](pic/image2.png)
