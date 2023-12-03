@@ -78,3 +78,25 @@ muduo提供了```epoll```和```poll```两种IO多路复用方法来实现事件�
 
 ![Alt text](pic/image2.png)
 另外上面这张图没有画出Acceptor，因为Acceptor和EventLoop和Poller之间有点错杂，可能画出来效果不好。
+##### 2.3.2. One Loop Per Thread 含义介绍
+有没有注意到上面图中,每一个EventLoop都绑定了一个线程(一对一绑定), 这种运行模式是muduo库的特色! 充份利用了多核CPU的能力, 每一个核的线程负责循环监听一组文件描述符的集合。至于这个One Loop Per Thread是怎么实现的, 后面还会交代。
+##### 2.3.3. EventLoop重要方法 EventLoop::loop()
+我将EventLoop核心逻辑给出，省略了非核心代码：
+```
+void EventLoop::loop() { // EventLoop 所属线程执行
+    while (!quit_) {
+        activeChannels_.clear();
+        //此时activeChannels已经填好了事件发生的channel
+        pollReturnTime_ = poller_->poll(kPollTimeMs, &activeChannels_);
+
+        for(Channel *channel : activeChannels_)
+            channel->handleEvent(pollReturnTime_);
+    }
+    LOG_INFO("EventLoop %p stop looping. \n", t_loopInThisThread);
+}
+```
+
+每个EventLoop对象都唯一绑定了一个线程,这个线程其实就在一直执行这个函数里面的while循环,这个while循环的大致逻辑比较简单。就是调用Poller::poll方法获取事件监听器上的监听结果。接下来在loop里面就会调用监听结果中每一个Channel的处理函数handleEvent()。每一个Channel的处理函数会根据Channel类中封装的实际发生的事件, 执行Channel类中封装的各事件处理函数。(比如一个Channel发生了可读事件, 可写事件, 则这个Channel的handleEvent()就会调用提前注册在这个Channel的可读事件和可写事件处理函数, 又比如另一个Channel只发生了可读事件, 那么handleEvent()就只会调用提前注册在这个Channel中的可读事件处理函数)。上面讲Channel时也提到了Channel对应的四种事件处理函数(回调函数): ```读回调函数setReadCallback```、```写回调函数setWriteCallback```、```关闭回调函数setCloseCallback```、```错误回调函数setErrorCallback```等四种回调函数。
+
+看完上面的代码，感受到EventLoop的主要功能了吗?其实EventLoop所做的事情就是: **持续循环的获取监听结果并且根据结果调用处理函数。**
+
