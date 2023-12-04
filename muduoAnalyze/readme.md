@@ -25,7 +25,7 @@ muduo 库有三个核心组件支撑一个 Reactor 实现持续的监听一组 f
 - fd\_: 这个`Channel`对象照看的文件描述符;
 - int events\_: 代表 fd`感兴趣`的事件类型集合;
 - int revents\_ : 代表事件监听器`实际监听`到该 fd 发生的事件类型集合, 当事件监听器监听到一个 fd 发生了什么事件，通过`Channel::set_revents()`函数来设置`revents`值;
-- EventLoop\* loop: 这个 fd 属于哪个 EventLoop 对象, 这个暂时不解释;
+- EventLoop* loop: 这个 fd 属于哪个 EventLoop 对象, 这个暂时不解释;
 - read*callback*、write*callback*、close*callback*、error*callback*: 这些是`std::function`类型, 代表着这个`Channel`为这个文件描述符保存的各事件类型发生时的处理函数。比如这个 fd 发生了可读事件, 需要执行可读事件处理函数, 这时候`Channel类`都替你保管好了这些可调用函数, 真是贴心啊, 要用执行的时候直接管保姆要就可以了;
 
 ##### Channel 类的重要成员方法：
@@ -130,16 +130,16 @@ void EventLoop::loop() { // EventLoop 所属线程执行
 
 #### 3.1.1. Acceptor 封装的重要成员变量：
 
-- acceptSocket _: 这个是服务器监听套接字的文件描述符, 即`socket`套接字返回的监听套接字;
-- acceptChannel*: 这是个`Channel`类, 把```acceptSocket*```及其感兴趣事件和事件对应的处理函数都封装进去;
-- EventLoop * loop: 监听套接字的 fd 由哪个`EventLoop`负责循环监听以及处理相应事件, 其实这个`EventLoop`就是 main EventLoop;
-- newConnectionCallbac_: `TcpServer`构造函数中将`TcpServer::newConnection()`函数注册给了这个成员变量。这个`TcpServer::newConnection`函数的功能是公平的选择一个 subEventLoop, 并把已经接受的连接分发给这个`subEventLoop`;
+- ```acceptSocket _```: 这个是服务器监听套接字的文件描述符, 即`socket`套接字返回的监听套接字;
+- ```acceptChannel*```: 这是个`Channel`类, 把```acceptSocket*```及其感兴趣事件和事件对应的处理函数都封装进去;
+- ```EventLoop * loop```: 监听套接字的 fd 由哪个`EventLoop`负责循环监听以及处理相应事件, 其实这个`EventLoop`就是 main EventLoop;
+- ```newConnectionCallbac_```: `TcpServer`构造函数中将`TcpServer::newConnection()`函数注册给了这个成员变量。这个`TcpServer::newConnection`函数的功能是公平的选择一个 subEventLoop, 并把已经接受的连接分发给这个`subEventLoop`;
 
 #### 3.1.2. Acceptor 封装的重要成员方法：
 
-- listen(): 该函数底层调用了 linux 的函数`listen()`，开启对`acceptSocket_`的监听同时将`acceptChannel`及其感兴趣事件（可读事件）注册到`main EventLoop`的事件监听器上。换言之就是让`main EventLoop`事件监听器去监听`acceptSocket_`。
-- handleRead(): 这是一个私有成员方法, 这个方法是要注册到`acceptChannel_`上的, 同时`handleRead()`方法内部还调用了成员变量`newConnectionCallback_`保存的函数。当`main EventLoop`监听到`acceptChannel_`上发生了可读事件时(新用户连接事件), 就是调用这个`handleRead()`方法。
-  简单说一下这个`handleRead()`最终实现的功能是什么, 接受新连接, 并且以负载均衡的选择方式选择一个`sub EventLoop`, 并把这个新连接分发到这个`subEventLoop`上, 这里是需要理解的重点。
+- ```listen()```: 该函数底层调用了 linux 的函数`listen()`，开启对`acceptSocket_`的监听同时将`acceptChannel`及其感兴趣事件（可读事件）注册到`main EventLoop`的事件监听器上。换言之就是让`main EventLoop`事件监听器去监听`acceptSocket_`。
+- ```handleRead()```: 这是一个私有成员方法, 这个方法是要注册到`acceptChannel_`上的, 同时`handleRead()`方法内部还调用了成员变量`newConnectionCallback_`保存的函数。当`main EventLoop`监听到`acceptChannel_`上发生了可读事件时(新用户连接事件), 就是调用这个`handleRead()`方法。
+- 简单说一下这个`handleRead()`最终实现的功能是什么, 接受新连接, 并且以负载均衡的选择方式选择一个`sub EventLoop`, 并把这个新连接分发到这个`subEventLoop`上, 这里是需要理解的重点。
 
 #### 3.2. Socket 类
 
@@ -202,14 +202,162 @@ Buffer类其实是封装了一个用户缓冲区，以及向这个缓冲区写�
 ### 3.4. TcpConnection类
 在上面讲```Acceptor```的时候提到了这个```TcpConnection类```。这个类主要封装了一个已建立的TCP连接，以及控制该TCP连接的方法（连接建立和关闭和销毁）, 以及该连接发生的各种事件（读/写/错误/连接）对应的处理函数，以及这个TCP连接的服务端和客户端的套接字地址信息等。
 
-我个人觉得TcpConnection类和Acceptor类是兄弟关系，Acceptor用于main EventLoop中，对服务器监听套接字fd及其相关方法进行封装（监听、接受连接、分发连接给Sub EventLoop等）, TcpConnection用于Sub EventLoop中, 对连接套接字fd及其相关方法进行封装（读消息事件、发送消息事件、连接关闭事件、错误事件等）。
+我个人觉得```TcpConnection类```和```Acceptor类```是兄弟关系，```Acceptor```用于```main EventLoop```中，对服务器监听套接字fd及其相关方法进行封装（监听、接受连接、分发连接给```Sub EventLoop```等）, ```TcpConnection```用于```Sub EventLoop```中, 对连接套接字fd及其相关方法进行封装（读消息事件、发送消息事件、连接关闭事件、错误事件等）。
 #### 3.4.1. TcpConnection的重要变量: 
 
 - socket_: 用于保存已连接套接字文件描述符。
 - channel_: 封装了上面的socket_及其各类事件的处理函数(读、写、错误、关闭等事件处理函数)。这个Channel中保存的各类事件的处理函数是在TcpConnection对象构造函数中注册的。
-- loop_: 这是一个EventLoop*类型，该Tcp连接的Channel注册到了哪一个sub EventLoop上。这个loop_就是那一个sub EventLoop。
-- inputBuffer_: 这是一个Buffer类，是该TCP连接对应的用户接收缓冲区。
-- outputBuffer_: 也是一个Buffer类，不过是用于暂存那些暂时发送不出去的待发送数据。因为Tcp发送缓冲区是有大小限制的，假如达到了高水位线，就没办法把发送的数据通过send()直接拷贝到Tcp发送缓冲区，而是暂存在这个- outputBuffer_中，等TCP发送缓冲区有空间了，触发可写事件了，再把outputBuffer_中的数据拷贝到Tcp发送缓冲区中。
-- state_: 这个成员变量标识了当前TCP连接的状态（Connected、Connecting、Disconnecting、Disconnected）
+- loop_: 这是一个```EventLoop* ```类型, 该Tcp连接的```Channel```注册到了哪一个```sub EventLoop```上。这个loop_就是那一个```sub EventLoop```。
+- inputBuffer_: 这是一个```Buffer类```, 是该TCP连接对应的用户接收缓冲区。
+- outputBuffer_: 也是一个```Buffer类```, 不过是用于暂存那些暂时发送不出去的待发送数据。因为Tcp发送缓冲区是有大小限制的, 假如达到了高水位线，就没办法把发送的数据通过send()直接拷贝到Tcp发送缓冲区, 而是暂存在这个- outputBuffer_中, 等TCP发送缓冲区有空间了, 触发可写事件了, 再把outputBuffer_中的数据拷贝到Tcp发送缓冲区中。
+- state_: 这个成员变量标识了当前TCP连接的状态(Connected、Connecting、Disconnecting、Disconnected)
 connetionCallback_、messageCallback_、writeCompleteCallback_、closeCallback_：用户会自定义 [连接建立/关闭后的处理函数] 、[收到消息后的处理函数]、[消息发送完后的处理函数]以及Muduo库中定义的[连接关闭后的处理函数]。这四个函数都会分别注册给这四个成员变量保存。
 
+#### 3.4.2. TcpConnection的重要成员方法：
+
+```handleRead()```、```handleWrite()```、```handleClose()```、```handleError()```: 这四个函数都是私有成员方法，在一个已经建立好的TCP连接上主要会发生四类事件：可读事件、可写事件、连接关闭事件、错误事件。当事件监听器监听到一个连接发生了以上的事件，那么就会在```EventLoop```中调用这些事件对应的处理函数，同时```accept```返回已连接套接字所绑定的```Channel```中注册了这四种回调函数。
+- ```handleRead()```: 负责处理TCP连接的可读事件, 它会将客户端发送来的数据拷贝到用户缓冲区中(inputBuffer_), 然后再调用```connectionCallback_```保存的连接建立后的处理函数```messageCallback_```。这个messageCallback_由上层用户注册, 之后muduo库会在T```cpServer中```会对其设置。
+- ```handleWrite()```: 负责处理Tcp连接的可写事件。这个函数的情况有些复杂，留到下一篇讲解。
+- ```handleClose()```: 负责处理Tcp连接关闭的事件。大概的处理逻辑就是将这个```TcpConnection```对象中的```channel_```从事件监听器中移除。然后调用```connectionCallback_```和```closeCallback_```保存的回调函数。这```closeCallback_```中保存的函数是由muduo库提供的, ```connectionCallback_```保存的回调函数则由用户提供的(可有可无其实)。
+
+# 主线篇
+
+
+TCP网络编程的本质其实是处理下面这几个事件：
+
+连接的建立。
+连接的断开：包括主动断开和被动断开。
+消息到达，客户端连接文件描述符可读。
+消息发送，向客户端连接文件描述符写数据。
+所以我们这一篇内容也是围绕上面四个主线展开！
+
+### 1. 用muduo库实现简易echo服务器
+```
+/*
+muduo网络库给用户提供了两个主要类
+TcpServer: 用于编写服务器程序
+TcpClient: 用于编写客户端程序
+
+epoll+线程池
+好处: 能够把网络I/O代码和业务代码分开, 业务代码主要是"用户的连接和断开, "用户的可读写事件"
+
+*/
+
+#include <muduo/net/TcpServer.h>
+#include <muduo/net/EventLoop.h>
+#include <iostream>
+#include <functional>
+#include <string>
+using namespace std;
+using namespace muduo;
+using namespace muduo::net;
+using namespace placeholders;
+
+/*基于muduo网络库开发服务器程序
+1.组合TcpServer对象
+2.创建EventLoop事件循环对象的指针
+3.明确TcpServer构造函数需要什么参数, 输出MyTcpServer的构造函数
+4.在当前服务器类的构造函数当中, 注册处理连接的回调函数和处理读写事件的回调函数
+5.设置合适的服务端线程数量, muduo库会自己分配IO线程和worker线程
+*/
+class MyTcpServer
+{
+public://#3
+    MyTcpServer(EventLoop *loop,               // 事件循环, Reactor,
+               const InetAddress &listenAddr, // IP+PORT
+               const string &nameArg          // 服务器的名字
+               ) : _server(loop, listenAddr, nameArg)
+    {
+        //#4 给服务器注册用户连接的创建和断开回调
+        _server.setConnectionCallback(std::bind(&MyTcpServer::onConnection, this, _1));
+
+        //#4  给服务器注册用户读写事件回调
+        _server.setMessageCallback(std::bind(&MyTcpServer::onMessage, this, _1, _2, _3));
+
+        //#5 设置服务器端的线程数量 1个IO + 3个worker线程
+        _server.setThreadNum(4);
+    }
+    // 开启事件循环
+    void start()
+    {
+        _server.start();
+    }
+
+private:
+    // 专门处理用户的连接创建和断开  epoll clientfd accept
+    void onConnection(const TcpConnectionPtr &conn)
+    {
+        if (conn->connected())
+        {
+            cout << conn->peerAddress().toIpPort() << "->" << conn->localAddress().toIpPort() << "state:online" << endl;
+        }
+        else
+        {
+            cout << conn->peerAddress().toIpPort() << "->" << conn->localAddress().toIpPort() << "state:offline" << endl;
+            conn->shutdown(); // close(fd)
+            //_loop->quit();
+        }
+    }
+
+    // 专门处理用户的读写事件
+    void onMessage(const TcpConnectionPtr &conn, // 连接
+                   Buffer *buffer,               // 缓冲区
+                   Timestamp time)               // 接收到数据的时间信息
+
+    {
+        string buf = buffer->retrieveAllAsString();
+        cout << "recv buff:" << buf << "time:" << time.toString() << endl;
+        conn->send(buf);
+    }
+    TcpServer _server; // #1
+    EventLoop *_loop;  // #2  epoll
+};
+
+int main()
+{
+    EventLoop loop;
+    InetAddress addr("127.0.0.1", 6000);
+    MyTcpServer server(&loop, addr, "MyTcpServer");
+
+    server.start(); // listenfd epoll_ctl=>epoll
+    loop.loop();    // epoll_wait, 以阻塞方式等待用户的连接, 已连接用户的读写操作等。
+    return 0;
+}
+```
+### 2. 建立连接
+#### 2.1. 连接建立的代码逻辑
+
+![Alt text](pic/image4.png)
+
+注意下面的标号分别对应上图中的代码方框标号！！
+
+#### 1: TcpServer::TcpServer()
+- 当我们创建一个TcpServer对象, 即执行代码TcpServer server(&loop, listenAddr);调用了TcpServer的构造函数, TcpServer构造函数最主要的就是类的内部实例化了一个Acceptor对象, 并往这个Acceptor对象注册了一个回调函数TcpServer::newConnection()。
+
+#### 5: Acceptor::Acceptor()
+- 当我们在TcpServer构造函数实例化Acceptor对象时, Acceptor的构造函数中实例化了一个Channel对象, 即acceptChannel_, 该Channel对象封装了服务器监听套接字文件描述符(尚未注册到main EventLoop的事件监听器上)。接着Acceptor构造函数将Acceptor::handleRead()方法注册进acceptChannel_中, 这也意味着, 日后如果事件监听器监听到acceptChannel_发生可读事件, 将会调用Acceptor::handleRead()函数。
+
+至此，TcpServer对象创建完毕，用户调用TcpServer::start()方法，开启TcpServer。我们来直接看一下TcpServer::start()方法都干了什么，我省略了一些非核心的代码: 
+```
+/******** TcpServer.cc *********/
+void TcpServer::start() // 开启服务器监听
+{
+        loop_->runInLoop(std::bind(&Acceptor::listen, acceptor_.get()));
+}
+
+/******** Acceptor.cc  *********/
+void Acceptor::listen()
+{
+    listenning_ = true;
+    acceptSocket_.listen();         // listen
+    acceptChannel_.enableReading(); // acceptChannel_注册至Poller !重要
+}
+```
+其实就是将其实主要就是调用Acceptor::listen()函数(底层是调用了linux的函数listen())监听服务器套接字，以及将acceptChannel_注册到main EventLoop的事件监听器上监听它的可读事件(新用户连接事件)
+接着用户调用loop.loop()，即调用了EventLoop::loop()函数，该函数就会循环的获取事件监听器的监听结果，并且根据监听结果调用注册在事件监听器上的Channel对象的事件处理函数。
+
+#### 6: Acceptor::handleRead()
+- 当程序如果执行到了这个函数里面,说明acceptChannel_发生可读事件,程序处理新客户连接请求。该函数首先调用了Linux的函数accept()接受新客户连接。接着调用了TcpServer::newConnection()函数,这个函数是在步骤1中注册给Acceptor并由成员变量newConnectionCallback_保存。
+
+#### 7: TcpServer::newConnection()
+- 该函数的主要功能就是将建立好的连接进行封装(封装成TcpConnection对象),并使用选择算法公平的选择一个sub EventLoop,并调用TcpConnection::connectEstablished()将TcpConnection::channel_注册到刚刚选择的sub EventLoop上。
