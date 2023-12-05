@@ -1,9 +1,11 @@
-重构并剖析了 muduo 库中的核心部分，即 Multi-Reactor 架构部分，具体细分有以下几个模块：
+# 概述
 
-- 网络相关模块：如 Socket、InetAddress、TcpConnection、Acceptor、TcpServer 等
-- 事件循环相关模块：如 EventLoop、Channel、Poller、EPollPoller 等
-- 线程相关模块：如 Thread、EventLoopThread、EventLoopThreadPool 等
-- 基础模块：如用户态缓冲区 Buffer、时间戳 Timestamp、日志类 Logger 等
+重构并剖析了 muduo 库中的核心部分, 即 Multi-Reactor 架构部分, 具体细分有以下几个模块:
+
+- 网络相关模块: 如 Socket、InetAddress、TcpConnection、Acceptor、TcpServer 等
+- 事件循环相关模块: 如 EventLoop、Channel、Poller、EPollPoller 等
+- 线程相关模块: 如 Thread、EventLoopThread、EventLoopThreadPool 等
+- 基础模块: 如用户态缓冲区 Buffer、时间戳 Timestamp、日志类 Logger 等
 
 ### 1. Multi-Reactor 概述
 
@@ -361,3 +363,48 @@ void Acceptor::listen()
 
 #### 7: TcpServer::newConnection()
 - 该函数的主要功能就是将建立好的连接进行封装(封装成TcpConnection对象),并使用选择算法公平的选择一个sub EventLoop,并调用TcpConnection::connectEstablished()将TcpConnection::channel_注册到刚刚选择的sub EventLoop上。
+
+#### 2.2. 编程细节启发，什么时候用智能指针管理对象最合适！
+
+在一些情况下使用智能指针会带来额外的性能开销，所以不能无脑梭哈。但是智能指针又能保护内存安全。这里的编程细节也给了我一些启发。来看下下面的核心逻辑代码，非核心以删除：
+```
+/******** Callbacks.h  ********/
+using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
+/******** TcpServer.cc ********/
+void TcpServer::newConnection(int sockfd, const InetAddress &peerAddr)
+{
+    TcpConnectionPtr conn(new TcpConnection(ioLoop,
+                                            connName,
+                                            sockfd,
+                                            localAddr,
+                                            peerAddr));
+    connections_[connName] = conn;
+    ioLoop->runInLoop(
+        std::bind(&TcpConnection::connectEstablished, conn));
+}
+```
+
+在```TcpServer::newConnection()```函数中，当接受了一个新用户连接，就要把这个Tcp连接封装成一个```TcpConnection```对象，也就是上面代码中的```new TcpConnection(…)```。然后用一个共享型智能指针来管理这个对象。所以为什么这里要把```TcpConnection```用智能指针来管理啊？
+
+这里使用智能指针管理TcpConnection的最重要原因在于防止指针悬空，而指针悬空可能会来自以下这三个方面：
+
+- 1、TcpConnection会和用户直接交互，用户可能会手欠删除。在我们编写服务器的时候，我们用户可以自定义连接事件发生后的处理函数（如下所示），并将这个函数注册到TcpServer中。
+```
+/**** 用户自定义的连接事件发生后的处理函数 *****/
+void onConnection(const TcpConnectionPtr &conn)
+{
+    ...
+}
+```
+** 假如这里的onConnection函数传入的是TcpConnection而不是TcpConnectionPtr，用户在onConnection函数中把TcpConnection对象给delete了怎么办？删除了之后，程序内部还要好几处地方都在使用TcpConnection对象。结果这个对象的内存突然消失了，服务器访问非法内存崩溃。虽然这一系列连锁反应会让人觉得用户很笨。但是作为设计者的我们必须要保证，编程设计不可以依赖用户行为，一定要尽可能地封死用户的误操作。所以这里用了共享智能指针。**
+
+- 2、TcpConnection对象的多线程安全问题：
+假如服务器要关闭了，这个时候Main EventLoop线程中的TcpServer::~TcpServer()函数开始把所有TcpConnection对象都删掉。那么其他线程还在使用这个TcpConnection对象，如果你把它的内存空间都释放了，其他线程访问了非法内存，会直接崩溃。
+你可能会觉得，反正我都要把服务器给关了，崩就崩了吧。这种想法是错的！因为可能在你关闭服务器的时候，其他线程正在处理TcpConnection的发送消息任务，这个时候你应该等它发完才释放TcpConnection对象的内存才对！
+
+第三种情况我们留到将连接关闭的时候再来讨论，这一部分也是有很好的编程启发的！
+
+
+
+
+
