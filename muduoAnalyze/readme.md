@@ -366,7 +366,7 @@ void Acceptor::listen()
 
 #### 2.2. 编程细节启发，什么时候用智能指针管理对象最合适！
 
-在一些情况下使用智能指针会带来额外的性能开销，所以不能无脑梭哈。但是智能指针又能保护内存安全。这里的编程细节也给了我一些启发。来看下下面的核心逻辑代码，非核心以删除：
+在一些情况下使用智能指针会带来额外的性能开销，所以不能无脑梭哈。但是智能指针又能保护内存安全。这里的编程细节也给了我一些启发。来看下下面的核心逻辑代码，非核心以删除: 
 ```
 /******** Callbacks.h  ********/
 using TcpConnectionPtr = std::shared_ptr<TcpConnection>;
@@ -398,7 +398,7 @@ void onConnection(const TcpConnectionPtr &conn)
 ```
 ** 假如这里的onConnection函数传入的是TcpConnection而不是TcpConnectionPtr，用户在onConnection函数中把TcpConnection对象给delete了怎么办？删除了之后，程序内部还要好几处地方都在使用TcpConnection对象。结果这个对象的内存突然消失了，服务器访问非法内存崩溃。虽然这一系列连锁反应会让人觉得用户很笨。但是作为设计者的我们必须要保证，编程设计不可以依赖用户行为，一定要尽可能地封死用户的误操作。所以这里用了共享智能指针。**
 
-- 2、TcpConnection对象的多线程安全问题：
+- 2、TcpConnection对象的多线程安全问题: 
 假如服务器要关闭了，这个时候Main EventLoop线程中的TcpServer::~TcpServer()函数开始把所有TcpConnection对象都删掉。那么其他线程还在使用这个TcpConnection对象，如果你把它的内存空间都释放了，其他线程访问了非法内存，会直接崩溃。
 你可能会觉得，反正我都要把服务器给关了，崩就崩了吧。这种想法是错的！因为可能在你关闭服务器的时候，其他线程正在处理TcpConnection的发送消息任务，这个时候你应该等它发完才释放TcpConnection对象的内存才对！
 
