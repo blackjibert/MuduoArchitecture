@@ -11,7 +11,7 @@
 - 多个连接可能被分派到多个线程中, 以充分利用CPU.
 - 如果有过多的耗费CPU I/O的计算任务，可以创建新的线程专门处理耗时的计算任务。
 - Reactor poll的大小是固定的，根据CPU的数目确定。
-// 设置EventLoop的线程个数，底层通过EventLoopThreadPool线程池管理线程类EventLoopThreadserver.
+// 设置EventLoop的线程个数，底层通过EventLoopThreadPool线程池管理线程类EventLoopThreadserver。
 
 ```
 setThreadNum(10);
@@ -20,10 +20,10 @@ setThreadNum(10);
 如果有过多的耗费CPU I/0的计算任务, 可以提交到创建的ThreadPool线程池中专门处理耗时的计算任务。
 
 ### reactors in process - one loop pre process
-- nginx服务器的网络模块设计, 基于进程设计, 采用多个Reactors充当I/0进程和工作进程，通过一把accept锁，完美解决多个Reactors的"惊群现象".
+- nginx服务器的网络模块设计, 基于进程设计,  采用多个Reactors充当I/0进程和工作进程, 通过一把accept锁, 完美解决多个Reactors的"惊群现象": 多个进程(线程)阻塞睡眠在某个系统调用上, 在等待某个 fd(socket)的事件的到来。当这个 fd(socket)的事件发生的时候, 这些睡眠的进程(线程)就会被同时唤醒, 多个进程(线程)从阻塞的系统调用上返回。
 
 ### muduo中的reactor模型
-- 事件驱动 (event handling)
+- 事件驱动(event handling)
 - 可以处理一个或多个输入源 (one or more inputs)
 - 通过Service Handler同步的将输入事件(Event)采用多路复用分发给相应的RequestHandler(多个)处理
 ![Alt text](pic/image.png)
@@ -40,11 +40,38 @@ setThreadNum(10);
 - edit(json)  生成c_cpp_properties.json
 - 完成配置json文件的配置, 主要是添加"compilerPath": "/usr/bin/gcc"
 - Ctrl+Shift+B生成tasks.json文件
-![Alt text](testmuduo/pic/image2.png)
+```
+{
+    "version":"2.0.0",
+    "tasks":[
+        {
+           "type":"shell",
+           "label":"g++ build active file",
+           "command":"usr/bin/g++",
+           "args":[
+                "-g", 
+                "${file}",
+                "o",
+                "${fileDirname}/$(fileBasenameNoExtension}",
+                "-lmuduo_net",
+                "-llmuduo_base",
+                "-lpthread"
+            ],
+            "options":{
+            "cwd":"/usr/bin"
+            },
+            "problemMatcher":[
+                "$gcc"
+            ],
+            "group":"build"  
+        }
+    ]
+}
+```
 
 ### Cmake配置
 - 使用简单方便，可以跨平台，构建项目编译环境。尤其比直接写Makefile简单(在构建大型工程编译时，需要写大量的文件依赖关系)，可以通过简单的CMake生成负责的Makefile文件。
-- cmake命令会执行目录下的CMakeLists.txt配置文件里面的配置项，一个基本的CMakeLists.txt的配置文件内容如下:
+- cmake命令会执行目录下的CMakeLists.txt配置文件里面的配置项, 一个基本的CMakeLists.txt的配置文件内容如下:
 
 ```
 #要求cmake最低的版本号
