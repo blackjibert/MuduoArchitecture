@@ -405,6 +405,11 @@ void onConnection(const TcpConnectionPtr &conn)
 第三种情况我们留到将连接关闭的时候再来讨论，这一部分也是有很好的编程启发的！
 
 
+### 3. 消息读回
+![Alt text](image5.png)
+
+在Main EventLoop中接受新连接请求之后，将这条TCP连接封装成TcpConnection对象。TcpConnection对象的内容如上图所示，主要就是封装了已连接套接字的fd（上图中的socket_，即accept返回的已连接套接字）、已连接套接字的channel_等。在TcpConnection的构造函数中会将TcpConnection::handleRead()等四个上图中的蓝色方法注册进这个channel_内。
+当TcpConnection对象建立完毕之后，Main EventLoop的Acceptor会将这个TcpConnection对象中的```channel_```注册到某一个Sub EventLoop中。如何注册的呢？就是TcpConnection对象的```EventLoop *loop_```指针指向子线程绑定的EvenLoop对象上即可，标志着当前的TcpConnection属于该具体的EventLoop。
 
 
 
