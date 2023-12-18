@@ -55,4 +55,75 @@
 #### epoll使用事件驱动的机制，内核里维护了一个链表来记录就绪事件，当某个socket有事件发生时，通过回调函数内核会将其加入到这个就绪事件列表中，当用户调用epoll_wait()函数时，只会返回有事件发生的文件描述符的个数，不需要像select/poll那样轮询扫描整个socket集合，大大提高检测的效率。
 #### 由于epoll的实现机制与select/poll机制完全不同，上面所说的select的缺点在epoll上不复存在。
 
+### socket服务端示例：
+一般来讲，我们要实现socket的时候，有五个关键的的步骤：
 
+- 创建socket：使用socket()系统调用创建一个新的socket文件描述符。
+- 绑定socket：使用bind()系统调用将新创建的socket绑定到一个地址和端口上。对于服务器程序来说，这个地址通常是服务器的IP地址，端口是你希望服务器监听的端口。
+- 监听连接：使用listen()系统调用使得socket进入监听模式，等待客户端的连接请求。
+- 接受连接：当一个客户端连接请求到来时，可以使用accept()系统调用接受这个连接，并获取一个新的socket文件描述符，这个描述符代表了服务器与客户端之间的连接。
+- 读写数据：通过read()和write()或者send()、recv()系统调用在连接上读取或写入数据。
+以上就是一个最基本的Socket服务器的工作流程。当然，在实际的应用开发中，根据应用的需要，可能还会使用更多的系统调用和库函数，例如使用select(), poll() 或 epoll() 处理多个并发连接，使用线程或进程来并行处理多个连接等。
+
+一个简单的示例：
+```
+#include <iostream>
+#include <string.h> 
+#include <sys/socket.h>
+#include <netinet/in.h> 
+
+#define MAX_BUFFER_SIZE 4096 
+#define PORT 8080
+
+int main() {
+    int server_fd, new_socket;
+    struct sockaddr_in address;
+    int opt = 1;
+    int addrlen = sizeof(address);
+    char buffer[MAX_BUFFER_SIZE] = {0};
+    
+    // 创建 socket 文件描述符
+    if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
+        std::cerr << "socket failed" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    
+    // 绑定 socket 到 localhost 的 8080 端口
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons(PORT);
+
+    if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
+        std::cerr << "bind failed" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    
+    // 使服务器开始监听，这里我们设定最大待处理连接数为 3
+    if (listen(server_fd, 3) < 0) {
+        std::cerr << "listen failed" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    
+    while(1) {
+        std::cout << "\nWaiting for a connection..." << std::endl;
+
+        // 接受客户端连接
+        if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0) {
+            std::cerr << "accept failed" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+
+        // 清空 buffer
+        memset(buffer, 0, MAX_BUFFER_SIZE);
+        
+        // 读取客户端发送的数据
+        int valread = read(new_socket , buffer, MAX_BUFFER_SIZE);
+        std::cout << "Client says: " << buffer << std::endl;
+    
+        // 向客户端发送消息
+        send(new_socket , "Hello from server" , strlen("Hello from server") , 0 );
+    }
+
+    return 0;
+}
+```
