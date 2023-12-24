@@ -1882,3 +1882,631 @@ gmake: *** [cmTC_50e3f/fast] 错误 2
 
 
 
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --c++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--c++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --ec++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--ec++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --target=arm-arm-none-eabi;-mcpu=cortex-m3 
+
+The output was:
+1
+g++-4.8: 警告：不建议使用‘-mcpu=’；请改用‘-mtune=’或‘-march=’
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c;-I__does_not_exist__ 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --c++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--c++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --ec++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--ec++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --target=arm-arm-none-eabi;-mcpu=cortex-m3 
+
+The output was:
+1
+g++-4.8: 警告：不建议使用‘-mcpu=’；请改用‘-mtune=’或‘-march=’
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c;-I__does_not_exist__ 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Checking whether the CXX compiler is IAR using "" did not match "IAR .+ Compiler":
+g++-4.8: fatal error: no input files
+compilation terminated.
+Checking whether the CXX compiler is IAR using "" did not match "IAR .+ Compiler":
+g++-4.8: fatal error: no input files
+compilation terminated.
+Detecting CXX compiler ABI info failed to compile with the following output:
+Change Dir: /home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_e55ec/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_e55ec.dir/build.make CMakeFiles/cmTC_e55ec.dir/build
+gmake[1]: Entering directory `/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_e55ec.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/g++-4.8    -o CMakeFiles/cmTC_e55ec.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.23/Modules/CMakeCXXCompilerABI.cpp
+g++-4.8: error trying to exec 'cc1plus': execvp: No such file or directory
+gmake[1]: *** [CMakeFiles/cmTC_e55ec.dir/CMakeCXXCompilerABI.cpp.o] Error 1
+gmake[1]: Leaving directory `/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTC_e55ec/fast] Error 2
+
+
+
+
+Determining if the CXX compiler works failed with the following output:
+Change Dir: /home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_00548/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_00548.dir/build.make CMakeFiles/cmTC_00548.dir/build
+gmake[1]: 进入目录“/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp”
+Building CXX object CMakeFiles/cmTC_00548.dir/testCXXCompiler.cxx.o
+/usr/bin/g++-4.8    -o CMakeFiles/cmTC_00548.dir/testCXXCompiler.cxx.o -c /home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+gmake[1]: *** [CMakeFiles/cmTC_00548.dir/testCXXCompiler.cxx.o] 错误 1
+gmake[1]: 离开目录“/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp”
+gmake: *** [cmTC_00548/fast] 错误 2
+
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --c++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--c++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --ec++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--ec++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --target=arm-arm-none-eabi;-mcpu=cortex-m3 
+
+The output was:
+1
+g++-4.8: 警告：不建议使用‘-mcpu=’；请改用‘-mtune=’或‘-march=’
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c;-I__does_not_exist__ 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --c++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--c++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --ec++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--ec++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --target=arm-arm-none-eabi;-mcpu=cortex-m3 
+
+The output was:
+1
+g++-4.8: 警告：不建议使用‘-mcpu=’；请改用‘-mtune=’或‘-march=’
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c;-I__does_not_exist__ 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Checking whether the CXX compiler is IAR using "" did not match "IAR .+ Compiler":
+g++-4.8: fatal error: no input files
+compilation terminated.
+Checking whether the CXX compiler is IAR using "" did not match "IAR .+ Compiler":
+g++-4.8: fatal error: no input files
+compilation terminated.
+Detecting CXX compiler ABI info failed to compile with the following output:
+Change Dir: /home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_b53b6/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_b53b6.dir/build.make CMakeFiles/cmTC_b53b6.dir/build
+gmake[1]: Entering directory `/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_b53b6.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/g++-4.8    -o CMakeFiles/cmTC_b53b6.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.23/Modules/CMakeCXXCompilerABI.cpp
+g++-4.8: error trying to exec 'cc1plus': execvp: No such file or directory
+gmake[1]: *** [CMakeFiles/cmTC_b53b6.dir/CMakeCXXCompilerABI.cpp.o] Error 1
+gmake[1]: Leaving directory `/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTC_b53b6/fast] Error 2
+
+
+
+
+Determining if the CXX compiler works failed with the following output:
+Change Dir: /home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_eb431/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_eb431.dir/build.make CMakeFiles/cmTC_eb431.dir/build
+gmake[1]: 进入目录“/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp”
+Building CXX object CMakeFiles/cmTC_eb431.dir/testCXXCompiler.cxx.o
+/usr/bin/g++-4.8    -o CMakeFiles/cmTC_eb431.dir/testCXXCompiler.cxx.o -c /home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+gmake[1]: *** [CMakeFiles/cmTC_eb431.dir/testCXXCompiler.cxx.o] 错误 1
+gmake[1]: 离开目录“/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp”
+gmake: *** [cmTC_eb431/fast] 错误 2
+
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --c++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--c++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --ec++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--ec++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --target=arm-arm-none-eabi;-mcpu=cortex-m3 
+
+The output was:
+1
+g++-4.8: 警告：不建议使用‘-mcpu=’；请改用‘-mtune=’或‘-march=’
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c;-I__does_not_exist__ 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --c++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--c++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --ec++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--ec++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --target=arm-arm-none-eabi;-mcpu=cortex-m3 
+
+The output was:
+1
+g++-4.8: 警告：不建议使用‘-mcpu=’；请改用‘-mtune=’或‘-march=’
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c;-I__does_not_exist__ 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Checking whether the CXX compiler is IAR using "" did not match "IAR .+ Compiler":
+g++-4.8: fatal error: no input files
+compilation terminated.
+Checking whether the CXX compiler is IAR using "" did not match "IAR .+ Compiler":
+g++-4.8: fatal error: no input files
+compilation terminated.
+Detecting CXX compiler ABI info failed to compile with the following output:
+Change Dir: /home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_687fb/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_687fb.dir/build.make CMakeFiles/cmTC_687fb.dir/build
+gmake[1]: Entering directory `/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_687fb.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/g++-4.8    -o CMakeFiles/cmTC_687fb.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.23/Modules/CMakeCXXCompilerABI.cpp
+g++-4.8: error trying to exec 'cc1plus': execvp: No such file or directory
+gmake[1]: *** [CMakeFiles/cmTC_687fb.dir/CMakeCXXCompilerABI.cpp.o] Error 1
+gmake[1]: Leaving directory `/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTC_687fb/fast] Error 2
+
+
+
+
+Determining if the CXX compiler works failed with the following output:
+Change Dir: /home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_a9c65/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_a9c65.dir/build.make CMakeFiles/cmTC_a9c65.dir/build
+gmake[1]: 进入目录“/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp”
+Building CXX object CMakeFiles/cmTC_a9c65.dir/testCXXCompiler.cxx.o
+/usr/bin/g++-4.8    -o CMakeFiles/cmTC_a9c65.dir/testCXXCompiler.cxx.o -c /home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+gmake[1]: *** [CMakeFiles/cmTC_a9c65.dir/testCXXCompiler.cxx.o] 错误 1
+gmake[1]: 离开目录“/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp”
+gmake: *** [cmTC_a9c65/fast] 错误 2
+
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --c++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--c++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --ec++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--ec++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --target=arm-arm-none-eabi;-mcpu=cortex-m3 
+
+The output was:
+1
+g++-4.8: 警告：不建议使用‘-mcpu=’；请改用‘-mtune=’或‘-march=’
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c;-I__does_not_exist__ 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --c++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--c++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --ec++ 
+
+The output was:
+1
+g++-4.8: 错误：unrecognized command line option ‘--ec++’
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: --target=arm-arm-none-eabi;-mcpu=cortex-m3 
+
+The output was:
+1
+g++-4.8: 警告：不建议使用‘-mcpu=’；请改用‘-mtune=’或‘-march=’
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/g++-4.8 
+Build flags: 
+Id flags: -c;-I__does_not_exist__ 
+
+The output was:
+1
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+
+
+Checking whether the CXX compiler is IAR using "" did not match "IAR .+ Compiler":
+g++-4.8: fatal error: no input files
+compilation terminated.
+Checking whether the CXX compiler is IAR using "" did not match "IAR .+ Compiler":
+g++-4.8: fatal error: no input files
+compilation terminated.
+Detecting CXX compiler ABI info failed to compile with the following output:
+Change Dir: /home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_008e9/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_008e9.dir/build.make CMakeFiles/cmTC_008e9.dir/build
+gmake[1]: Entering directory `/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_008e9.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/g++-4.8    -o CMakeFiles/cmTC_008e9.dir/CMakeCXXCompilerABI.cpp.o -c /usr/local/share/cmake-3.23/Modules/CMakeCXXCompilerABI.cpp
+g++-4.8: error trying to exec 'cc1plus': execvp: No such file or directory
+gmake[1]: *** [CMakeFiles/cmTC_008e9.dir/CMakeCXXCompilerABI.cpp.o] Error 1
+gmake[1]: Leaving directory `/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp'
+gmake: *** [cmTC_008e9/fast] Error 2
+
+
+
+
+Determining if the CXX compiler works failed with the following output:
+Change Dir: /home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_513df/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_513df.dir/build.make CMakeFiles/cmTC_513df.dir/build
+gmake[1]: 进入目录“/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp”
+Building CXX object CMakeFiles/cmTC_513df.dir/testCXXCompiler.cxx.o
+/usr/bin/g++-4.8    -o CMakeFiles/cmTC_513df.dir/testCXXCompiler.cxx.o -c /home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+g++-4.8: error trying to exec 'cc1plus': execvp: 没有那个文件或目录
+gmake[1]: *** [CMakeFiles/cmTC_513df.dir/testCXXCompiler.cxx.o] 错误 1
+gmake[1]: 离开目录“/home/zhj/MuduoArchitecture/build/CMakeFiles/CMakeTmp”
+gmake: *** [cmTC_513df/fast] 错误 2
+
+
+
