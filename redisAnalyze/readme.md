@@ -54,9 +54,33 @@
 
 
 ### List 列表
+#### redis的List是通过链表（Linked List）实现的。通过不同的指令组组合可以用作栈（stack）和队列（Queue）。
 - Queue（先进先出）
+![Alt text](pic/image6.png)
+``- LPUSH my_queue task:1 `` //往队列push两个元素
+``- LPUSH my_queue task:2 ``
+``- RPOP my_queue``  //输出为task:1
+``- RPOP my_queue``  //输出为task:2
 - Stack（先进后出）
+![Alt text](pic/image7.png)
+``- LPUSH unread_msg msg:1 msg:2 msg:3 msg:4 msg:5 `` //在List中放置最近发布的动态
+``- LPOP unread_msg``  //查看最近发布的动态，从同一个方向pop输出为msg:5 
+``- LPOP unread_msg``  //查看最近发布的动态，从同一个方向pop输出为msg:4 
+``- LPUSH unread_msg msg:6 msg:7 msg:8 msg:9 msg:10 `` //在List中放置最近发布的动态
+``- LTRM unread_msg 0 4`` //使用LTRM进行截断保留最新的5条数据
+``- LLen unread_msg`` //查看list的长度，输出为5
+``- LRANGE unread_msg 0 -1`` //查看list,从0开始到-1（列表最后）,输出如下: 
+`` 1）"msg:10"``
+`` 1）"msg:9"``
+`` 1）"msg:8"``
+`` 1）"msg:7"``
+`` 1）"msg:6"``
 
+#### 阻塞
+#### 列表支持阻塞操作。如果列表为空，``BLPOP``、``BRPOP`` 等命令会处于阻塞状态，当新的元素加入时，才会返回结果。
+![Alt text](pic/image8.png)
+#### 索引操作
+#### 我们可以通过索引去操作List中的元素。由于底层使用了链表，随着数据量增大，索引操作效率会降低。
 ### Set集合
 - 去重
 - 交集（共同关注）
