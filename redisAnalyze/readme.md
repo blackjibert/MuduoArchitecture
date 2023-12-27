@@ -1,4 +1,5 @@
 ## redis
+### 安装
 
 ### 功能
 - 缓存
@@ -170,7 +171,6 @@
 ``- SETBIT oneline_users 401 0``//将401位的用户设置为0，下线了
 ``- BITCOUNT oneline_users``//统计在线数量，返回3
 
-
 - 精确去重统计
 #### 大型数据集的去重，使用Set不适合，可以使用Bitmap。比如:日志信息:根据基站数据统计某个区域内某日的游客数量
 ```
@@ -184,8 +184,14 @@
 10099，3，2023-10-01 11:11:55
 ```
 ![Alt text](pic/image11.png)
-#### 每次获取一个日志，将用户的唯一标识放入当天某个区域的bitmap里面，重复加入也没有关系。最后通过bitcount来统计不重复的数量。
+#### 每次获取一个日志，将用户的唯一标识放入(SETBIT)当天某个区域的bitmap里面，重复加入也没有关系。最后通过BITCOUNT来统计不重复的数量。
 
 ### HyperLogLog 基数计算
 - 估算不重复元素的数量
+
+#### ```HyperLogLog```是一种概率性数据结构，基数计算用于估算集合中不重复元素的数量，相当于Distinct Count。
+#### HyperLogLog牺牲了一部分精度，换来了更高效的内存利用。这个算法的神奇之处在于计数项与内存使用量不成正比。Redis的HyperLogLog实现使用最多12 KB的空间，误差不超过1%。
+``- PFADD hllog a b c d e f g i j k l m n ``//使用PFADD命令在集合hllog中加入元素
+``- PFCOUNT hllog ``//使用PFCOUNT命令统计集合hllog中不重复的元素
+
 
