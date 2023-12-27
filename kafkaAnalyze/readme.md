@@ -28,4 +28,4 @@
 ### kafka集群由多个broker（消息代理）组成。broker负责消息的读写请求，并将数据写入到磁盘中，通常一台服务器上就会启动一个broker的实例，一台服务器就是一个broker
 ![Alt text](pic/image6.png)
 ### kafka集群由8哥broker组成，集群中的主题有8个分区组成（p0-p7），副本因子为3（replication-factors=3），每个数据存在3份（1个leader，2个follwer）。
-![Alt text](image7.png)
+![Alt text](pic/image7.png)
