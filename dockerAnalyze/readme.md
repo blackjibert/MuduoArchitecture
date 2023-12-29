@@ -1,3 +1,4 @@
+- https://www.yuque.com/wukong-zorrm/xwas40
 ## Docker和虚拟机的不同
 #### 1、启动速度不同
 - docker：启动 Docker 相当于启动宿主操作系统上的一个进程，启动速度属于秒级别。
@@ -107,4 +108,139 @@
 - 在运行的容器中执行命令，一般配合```-it``` 参数使用交互模式
 - ```docker exec -it db-mysql /bin/bash```
 
-### docker 网络
+### docker 网络（三种+一种自定义）
+#### bridge桥接网络
+- 如果不指定，新创建的容器默认将连接到bridge网络。默认情况下，使用bridge网络，宿主机可以ping通容器ip，容器中也能ping通宿主机。容器之间只能通过P 地址相互访问，由于容器的ip会随着启动顺序发生变化，因此不推荐使用ip访问。
+#### host
+慎用，可能会有安全问题
+- 容器与宿主机共享网络，不需要映射端口即可通过宿主机IP访问。 (-p选项会被忽略)主机模式网络可用于优化性能，在容器需要处理大量端口的情况下，它不需要网络地址转换 (NAT)，并且不会为每个端口创建“用户空间代理”。
+#### none
+- 禁用容器中所用网络，在启动容器时使用。
+- ```docker ps``` 查看运行的容器
+- ```docker inspect --formate='{{range .NetworksSettings.Networks}}{{.IPAddress}{{end}}' 容器名称``` //显示容器ip
+- ```curl 172.17.0.3:80``` //在宿主机直接访问80端口
+- ```docker exec -it some-nginx /bin/bash``` //进入其中一个容器，进行容器间的ping通信
+- docker hub 搜索busybox
+- ```docker run -it --rm busybox``` //启动busybox工具
+- ```ping 172.17.0.2``` //可以ping
+- 以上说明在bridge模式下，容器之间是可以通信的，也可以ping通宿主机。
+
+#### 用户自定义网络
+- 创建用户自定义网络
+- ```docker network create my-net```
+- 将已有容器连接到此网络
+- ```dogker network connect my-net some-mysql```
+- ```dogker network disconnect my-net some-mysql``` //断开
+- 创建容器时指定网络
+- ```docker run -it --rm --network my-net mysql:5.7 mysql -hsome-mysql -uroot -p```
+- 在用户自定义网络上，容器之间可以通过容器名进行访问，不需要桥接下的ip访问。
+- 用户自定义网络使用 Docker 的嵌入式DNS服务器将容器名解析成IP。
+
+
+### docker 存储
+- 将数据存储在容器中，一旦容器被删除，数据也会被删除。同时也会使容器变得越来越大，不方便恢复和迁移。
+- 将数据存储到容器之外，这样删除容器也不会丢失数据。一旦容器故障，我们可以重新创建一个容器，将数据挂载到容易里，就可以快速的恢复。
+#### 存储方式
+- docker提供了以下存储选项
+![Alt text](pic/image2.png)
+##### volumn卷
+- **卷**存储在主机文件系统分配一块专有存储区域，由 Docker (在 Linux 上)管理，并且与主机的核心功能隔离。非 Docker 进程不能修改文件系统的这一部分。卷是在 Docker 中持久保存数据的最佳方式
+##### bind mount绑定挂载
+- **绑定挂载**可以将主机文件系统上目录或文件装载到容器中，但是主机上的非 Docker 进程可以修改它们，同时在容器中也可以更改主机文件系统，包括创建、修改或删除文件或目录，使用不当，可能会带来安全隐患。
+##### tmpfs 临时挂载
+- **tmpfs挂载**仅存储在主机系统的内存中，从不写入主机系统的文件系统。当容器停止时数据将被删除。
+
+##### 绑定挂载(bind mount)
+- 绑定挂载适用以下场景:
+- 将配置文件从主机共享到容器
+- 在Docker主机上的开发环境和容器之间共享源代码或编译目录
+- 例如，可以将 Maven 的 **target/**目录挂载到容器中，每次在主机上用 Maven打包项目时，容器内- 都可以使用新编译的程序包。
+###### -v参数
+- 绑定挂载将主机上的目录或者文件装载到容器中。绑定挂载会覆盖容器中的目录或文件。如果宿主机目录不存在，docker会自动创建这个目录。但是docker只自动创建文件夹，不会创建文件。
+- 例如，容器内mysql的配置文件和数据存储目录使用主机的目录。可以将配置文件设置为只读(read-only)防止容器更改主机中的文件。(在容器内不能编辑，在宿主机上可以修改)
+- ```docker run -e MYSQL_ROOT_PASSWORD=123456 \```
+- ```-v /home/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf:ro \``` //:前面是宿主机目录，:后面是容器目录
+- ```-v /home/mysql/data:/var/lib/mysql \```
+- ```-d mysql:5.7 ```
+- 在宿主机上home目录下创建mysql文件夹
+- 在其创建mysql配置文件mysql.cnf
+
+##### volume 卷
+- 卷是docker 容器存储数据的首选方式，卷有以下优势:
+- 卷可以在多个正在运行的容器之间共享数据。仅当显式删除卷时，才会删除卷
+- 当你想要将容器数据存储在外部网络存储上或云提供商上，而不是本地时。
+- 当您需要备份、还原数据或将数据从一个 Docker 主机迁移到另卷更容易备份或迁移，一个 Docker 主机时，卷是更好的选择。
+- ```docker create volume vol-my-data```
+- ```docker run --name some-mysql-vol -e MYSQL_ROOT_PASSWORD=123456 \```
+- ```-v /home/mysql/vol-my-data :/etc/mysql/conf.d/mysql.cnf:ro \``` 
+- ```-v /home/mysql/vol-my-data:/var/lib/mysql \```
+- ```-d mysql:5.7 ```
+- ```docker inspect vol-my-data``` //查看卷
+
+
+##### --tmpfs 临时挂载
+- 临时挂载将数据保留在主机内存中，当容器停止时，文件将被删除
+- ```docker run -d -it --tmpfs /tmp nginx:1.22-alpine```
+
+### 部署应用
+- 本例子我们使用docker来部署一个应用系统，RuoYi是一款用iava编写的，基于SpringBoot+Bootstrap的后台管理系统。
+- ruoyi官方文档: http://doc.ruoyi.vip/ruoyi/
+- 源码下载: https://gitee.com/y_project/RuoYi/tree/v4.7.4/将源码编译打包成ruoyi-admin.jar文件，放到宿主机/home/app目录下，/home/app/sql目录下是数据库初始化脚本。
+- 配置文件中修改了端口、数据库连接信息。
+![Alt text](pic/image3.png)
+- 创建自定义网络 docker network create ruoyi-net
+- 创建卷来存储数据 docker volume create  ruoyi-data
+
+##### 我们在创建数据库容器的时候，需要做三件事:
+- 创建数据库ry
+- 设置字符集为utf-8
+- 执行数据库初始化脚本
+- 使用MYSQLDATABASE环境变量创建数据库设置字符集```--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci```
+- 容器使用/docker-entrypoint-initdb.d目录下的脚本初始化数据库，脚本可以是.sh .sql和.sql.gz 这三种格式。
+- ```docker run --name ruoyi-db \```
+- ```-v ruoyi-data:/var/lib/mysql \```
+- ```-v /home/app/sql:/docker-entrypoint-initdb.d \```
+- ```-e MYSQL DATABASE=ry \ ```
+- ```-e MYSQL ROOT_PASSWORD=123456 -d mysql:5.7 \```
+- ```--character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci```
+- 连接自定义网络 ```docker network connect ruoyi-net ruoyi-db```
+- 部署jar包，通过绑定挂载的方式加载到应用中
+- 拉取镜像docker pull openjdk:8u342-jre
+
+- ```docker run --name ruoyi-app \```
+- ```-p 8080:8080 \```
+- ```--network ruoyi-net \```
+- ```-v /home/app/ruoyi-admin.jar:/usr/local/src/ruoyi-admin.jar \```
+- ```-d openjdk:8u342-jre \```
+- ```java -jar /usr/local/src/ruoyi-admin.jar ```
+
+##### 运行之后，出现客户端访问乱码
+- 1.修改运行参数
+- 使用环境变量 LANG=C.UTF-8 设置客户端字符集
+![Alt text](pic/image4.png)
+- 2.修改配置文件
+- 修改/home/mysql/mysql.cnf
+![Alt text](pic/image5.png)
+
+### docker compose 容器编排
+- 在实际工作中，部署一个应用可能需要部署多个容器，一个一个部署非常不方便。docker compose可以一键部署和启动多个容器，它使用yaml文件来编排服务。github和docker hub很多项目都提供了docker-compose.yaml文件，我们可以一键部署项目，非常方便。
+
+#### 一键部署wordpress
+- wordpress是一个著名的开源博客系统
+- 将以下内容保存到本地的```docker-compose.yml```文件中。
+- ```docker compose``` 命令启动时，默认在当前目录下寻找 ```compose.yaml```或 ```compose.yml```，为了兼容之前的版本，也会查找 ```docker-compose.yaml```或 ```docker-compose.yml```。
+- 也可以使用```-f```参数手动指定文件 ```docker compose -f docker-compose-dev.yml up -d```
+
+- 在home目录下，创建wordpress
+- 创建```docker-compose.yaml```文件 
+![Alt text](pic/image6.png)
+- ```docker compose up -d``` //一键部署
+- ```docker compose stop``` 
+- ``` docker logs -f``` 
+- ``` docker compose start```
+- ``` docker compose down``` //删除容器，和网络，不会删除卷
+- ``` docker volume ls``` 
+- ```docker compose up -d``` //在此启动，数据依然存在
+- ```docker exec -it wordpress-wordpress-1 /bin/bash``` //方式1: 进入容器中执行命令
+- ```docker compose exec -it wordpress /bin/bash``` //方式2: 进入容器中执行命令
+- ```docker compose -p my up -d``` //改变前缀
