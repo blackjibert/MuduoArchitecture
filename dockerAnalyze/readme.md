@@ -2,7 +2,6 @@
 ## Docker和虚拟机的不同
 #### 1、启动速度不同
 - docker：启动 Docker 相当于启动宿主操作系统上的一个进程，启动速度属于秒级别。
-
 - 虚拟机：启动虚拟机需要先启动虚拟机的操作系统，再启动应用，这个过程非常慢，通常需要几分钟。
 
 #### 2、占用资源不同
@@ -15,27 +14,22 @@
 
 #### 4、安全性不同
 - docker：docker的安全性更弱。Docker的租户root和宿主机root等同，一旦容器内的用户从普通用户权限提升为root权限，它就直接具备了宿主机的root权限，进而可进行无限制的操作，容器至今还没有任何形式的硬件隔离，这使得容器容易受到攻击。
-
 - 虚拟机：虚拟机租户root权限和宿主机的root虚拟机权限是分离的，并且虚拟机利用如Intel的VT-d和VT-x的ring-1硬件隔离技术，这种隔离技术可以防止虚拟机突破和彼此交互。
 
 #### 5、可管理性不同
 - docker：docker的集中化管理⼯具还不算成熟。
-
-- 虚拟机：各种虚拟化技术都有成熟的管理⼯具，例如VMware vCenter提供完备的虚拟机管理能⼒。
+- 虚拟机：各种虚拟化技术都有成熟的管理工具，例如VMware vCenter提供完备的虚拟机管理能⼒。
 
 #### 6、高可用和可恢复性
-- docker：docker对业务的⾼可⽤⽀持是通过快速重新部署实现的。
-
-- 虚拟机：虚拟化具备负载均衡，⾼可⽤，容错，迁移和数据保护等经过⽣产实践检验的成熟保障机制，VMware可承诺虚拟机99.999%⾼可⽤，保证业务连续性。
+- docker：docker对业务的高可用支持是通过快速重新部署实现的。
+- 虚拟机：虚拟化具备负载均衡，高可用，容错，迁移和数据保护等经过⽣产实践检验的成熟保障机制，VMware可承诺虚拟机99.999%高可用，保证业务连续性。
 
 #### 7、创建、删除速度不同
 - docker：Docker容器创建是秒级别的，Docker的快速迭代性，决定了⽆论是开发、测试、部署都可以节约⼤量时间。
-
 - 虚拟机：虚拟化创建是分钟级别的。
 
 #### 8、交付部署不同
 - docker：Docker在Dockerfile中记录了容器构建过程，可在集群中实现快速分发和快速部署。
-
 - 虚拟机：虚拟机可以通过镜像实现环境交付的⼀致性，但镜像分发⽆法体系化。
 
 ## Docker
@@ -52,6 +46,7 @@
 #### 安装环境: CentOS7.3+
 - 如果之前安装了旧版docker，请先删除
 ```sudo yum remove docker ocker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine```
+
 #### 安装仓库
 - ```sudo yum install -y yum-utils```
 - 添加源 ```sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo```
@@ -135,7 +130,6 @@
 - ```docker run -it --rm --network my-net mysql:5.7 mysql -hsome-mysql -uroot -p```
 - 在用户自定义网络上，容器之间可以通过容器名进行访问，不需要桥接下的ip访问。
 - 用户自定义网络使用 Docker 的嵌入式DNS服务器将容器名解析成IP。
-
 
 ### docker 存储
 - 将数据存储在容器中，一旦容器被删除，数据也会被删除。同时也会使容器变得越来越大，不方便恢复和迁移。
@@ -243,4 +237,4 @@
 - ```docker compose up -d``` //在此启动，数据依然存在
 - ```docker exec -it wordpress-wordpress-1 /bin/bash``` //方式1: 进入容器中执行命令
 - ```docker compose exec -it wordpress /bin/bash``` //方式2: 进入容器中执行命令
-- ```docker compose -p my up -d``` //改变前缀
+- ```docker compose -p my up -d``` //改变前缀为my
