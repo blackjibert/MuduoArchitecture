@@ -12,4 +12,5 @@ int main()
     pf1(1, 2, "西施", 3, 4, 5);
     auto pf2 = func; //使用auto变量
     pf1(1, 2, "西施", 3, 4, 5);
+    return 0;
 }
